@@ -17,7 +17,7 @@ int main(int argc, const char * argv[]) {
         
         // File to read from
         char filepathInput[1000];
-        printf("Enter the absolute file path: ");
+        printf("Enter the file path: ");
         // /Users/morgan/Code/osx/CSVFileSplit/test.csv
         scanf("%s", filepathInput);
         csvfsFile.sourceFile = [NSString stringWithUTF8String:filepathInput];
@@ -29,7 +29,9 @@ int main(int argc, const char * argv[]) {
         csvfsFile.destFile = [NSString stringWithUTF8String:newDirectoryInput];
         
         // Max lines per file
-        int maxLinesPerFile = 2;
+        int maxLinesPerFile = 1;
+        printf("Enter the maximum number of lines per file: ");
+        scanf("%i", &maxLinesPerFile);
         
 
         // Create string to hold data
@@ -44,6 +46,7 @@ int main(int argc, const char * argv[]) {
         NSString *fh = [NSString stringWithContentsOfFile: csvfsFile.sourceFile encoding:NSUTF8StringEncoding error:NULL];
         for (NSString *line in [fh componentsSeparatedByString:@"\n"]) {
             lineCount++;
+
             contents = [contents stringByAppendingString:line];
             
             if (lineCount >= maxLinesPerFile) {
@@ -64,5 +67,6 @@ int main(int argc, const char * argv[]) {
         fileCount++;
         [csvfsFile writeContents:contents ToFile:fileCount];
     }
+    
     return 0;
 }
