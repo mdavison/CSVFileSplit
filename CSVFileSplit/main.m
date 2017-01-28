@@ -18,15 +18,18 @@ int main(int argc, const char * argv[]) {
         // File to read from
         char filepathInput[1000];
         printf("Enter the file path: ");
-        // /Users/morgan/Code/osx/CSVFileSplit/test.csv
         scanf("%s", filepathInput);
         csvfsFile.sourceFile = [NSString stringWithUTF8String:filepathInput];
         
         // Directory to put new files
         char newDirectoryInput[1000];
-        printf("Enter the directory for the new files (no trailing slash): ");
+        printf("Enter the directory for the new files: ");
         scanf("%s", newDirectoryInput);
         csvfsFile.destFile = [NSString stringWithUTF8String:newDirectoryInput];
+        // Find out if it has a trailing slash, and if not, add one
+        if (![csvfsFile.destFile hasSuffix:@"/"]) {
+            csvfsFile.destFile = [csvfsFile.destFile stringByAppendingString:@"/"];
+        }
         
         // Max lines per file
         int maxLinesPerFile = 1;
@@ -41,9 +44,17 @@ int main(int argc, const char * argv[]) {
         int lineCount = 0;
         int fileCount = 0;
         
+        NSError *error;
+        
         
         // Read the file from path provided by user
-        NSString *fh = [NSString stringWithContentsOfFile: csvfsFile.sourceFile encoding:NSUTF8StringEncoding error:NULL];
+        NSString *fh = [NSString stringWithContentsOfFile: csvfsFile.sourceFile encoding:NSUTF8StringEncoding error:&error];
+        
+        if (error) {
+            NSLog(@"There was an error opening the source file: %@", [error localizedDescription]);
+            return 1;
+        }
+        
         for (NSString *line in [fh componentsSeparatedByString:@"\n"]) {
             lineCount++;
 
